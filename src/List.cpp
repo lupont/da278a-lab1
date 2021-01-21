@@ -79,89 +79,17 @@ typename List<T>::iterator List<T>::erase(const iterator& pos)           // TODO
 
 }
 
-/*template <class T>*/
-/*void List<T>::push_back(const T& value)*/
-/*{*/
-/*    */
-/*       [H] -> [N1] -> [N2]*/
-/*       h.next = N1*/
-/*       h.prev = N2*/
+/* template <class T> */
+/* void List<T>::pop_back() */
+/* { */
+/*     _head._prev = _head._prev._prev; */
+/* } */
 
-/*       N1.next = N2*/
-/*       N1.prev = H*/
-
-/*       N2.next = H*/
-/*       N2.prev = N1*/
-
-/*       push_back([N3])*/
-
-/*       [H] -> [N1] -> [N2] -> [N3]*/
-
-/*       h.next = N1*/
-/*       h.prev = N3 **/
-
-/*       N1.next = N2*/
-/*       N1.prev = H*/
-
-/*       N2.next = N3 **/
-/*       N2.prev = N1*/
-
-/*       N3.next = H*/
-/*       N3.prev = N2*/
-
-/*   */
-
-/*    Node node = new Node { value };*/
-/*    node._next = _head;*/
-/*    node._prev = _head._prev;*/
-
-/*    _head._prev._next = node;*/
-/*    _head._prev = node;*/
-
-/*}*/
-
-/*template <class T>*/
-/*void List<T>::push_front(const T& value)*/
-/*{*/
-/*    */
-/*       [H] -> [N1] -> [N2]*/
-/*       h.next = N1*/
-/*       h.prev = N2*/
-
-/*       N1.next = N2*/
-/*       N1.prev = H*/
-
-/*       push_front([N3])*/
-
-/*       [H] -> [N3] -> [N1] -> [N2]*/
-/*       h.next = N3 **/
-/*       h.prev = N2*/
-
-/*       N3.next = N1*/
-/*       N3.prev = H*/
-
-/*       N1.next = N2*/
-/*       N1.prev = N3 **/
-
-/*    */
-/*    Node node = new Node { value };*/
-/*    node._next = _head._next;*/
-/*    node._prev = _head;*/
-
-/*    _head._next = node;*/
-/*}*/
-
-template <class T>
-void List<T>::pop_back()
-{
-    _head._prev = _head._prev._prev;
-}
-
-template <class T>
-void List<T>::pop_front()
-{
-    _head._next = _head._next._next;
-}
+/* template <class T> */
+/* void List<T>::pop_front() */
+/* { */
+/*     _head._next = _head._next._next; */
+/* } */
 
 template <class T>
 void List<T>::swap(List<T>& rhs) // TODO: move to Link?

@@ -7,7 +7,15 @@ int main(int argc, char** argv)
 {
     List<int> list;
 
-    bool empty = list.empty();
+    cout << "is empty: " << list.empty() << endl;
+
+    list.push_back(3);
+    list.push_front(1);
+
+    cout << "is empty: " << list.empty() << endl;
+
+    cout << "front: " << list.front() << endl;
+    cout << "back: " << list.back() << endl;
 
     /* list.push_front(1); */
     /* cout << list.front() << endl; */

@@ -110,39 +110,46 @@ public:
 
     List& operator=(const List& other);
 
-    T& front() { return _head._next; }
-    const T& front() const { return _head._next; }
+    T& front()             { return static_cast<Node*>(_head._next)->_data; }
+    const T& front() const { return static_cast<Node*>(const_cast<Link*>(_head._next))->_data; }
 
-    T& back() { return _head._prev; }
-    const T& back() const { return _head._prev; }
+    T& back()             { return static_cast<Node*>(_head._prev)->_data; }
+    const T& back() const { return static_cast<Node*>(const_cast<Link*>(_head._prev))->_data; }
 
     iterator begin() noexcept;
     iterator end()   noexcept;
 
-    bool empty() const noexcept { return false; }
+    bool empty() const noexcept { return _head._next != nullptr; }
     size_t size() const noexcept;
 
     void push_back(const T& value)
     {
-        Node node = new Node { value };
-        node._next = _head;
-        node._prev = _head._prev;
+        Node* node = new Node { value };
+        node->_next = &_head;
+        node->_prev = _head._prev;
 
-        _head._prev._next = node;
+        _head._prev->_next = node;
         _head._prev = node;
     }
 
     void push_front(const T& value)
     {
-        Node node = new Node { value };
-        node._next = _head._next;
-        node._prev = _head;
+        Node* node = new Node { value };
+        node->_next = _head._next;
+        node->_prev = &_head;
 
         _head._next = node;
     }
 
-    void pop_back();
-    void pop_front();
+    void pop_back()
+    {
+        _head._prev = _head._prev._prev;
+    }
+
+    void pop_front()
+    {
+        _head._next = _head._next._next;
+    }
 
     void swap(List<T>& rhs);                     // TODO: move to Link?
     void splice(const_iterator pos, List& other, // TODO: move to Link? rename List to list?
