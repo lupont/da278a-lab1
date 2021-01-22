@@ -8,12 +8,14 @@
 
 #include "../include/TestLevel.h"
 
-#include "../include/List.h"
+#if (defined(LEVEL)  && (LEVEL>20) ||  !defined(LEVEL))   && (defined(VG) || defined(G))
+
+#include "../include/List.hpp"
 //#include "ListIter.hpp"
 
 using Cont = List<char>; //Ersätt List med vad er lista heter
-using Iter = Cont::iterator;
-using CIter = Cont::const_iterator;
+using  Iter = Cont::iterator;
+using  CIter = Cont::const_iterator;
 
 
 #include <cassert>
@@ -126,3 +128,7 @@ void TestListIter() {
     }
 
 }
+
+#else
+void TestListIter() {}
+#endif

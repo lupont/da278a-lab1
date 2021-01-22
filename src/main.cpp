@@ -1,29 +1,38 @@
-#include "../include/List.h"
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#include <stdlib.h>
+#include <crtdbg.h>
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
 
+#include <iostream>
 using std::cout;
-using std::endl;
 
-int main(int argc, char** argv)
-{
-    List<int> list;
+#include "../include/TestLevel.h"
 
-    cout << "is empty: " << list.empty() << endl;
+#include "../include/List.hpp"
 
-    list.push_back(3);
-    list.push_front(1);
 
-    cout << "is empty: " << list.empty() << endl;
+//template class List<int>;
 
-    cout << "front: " << list.front() << endl;
-    cout << "back: " << list.back() << endl;
 
-    /* list.push_front(1); */
-    /* cout << list.front() << endl; */
+void TestBasic();
+void TestList();
+void TestListIter();
 
-    cout << "made it to the end" << endl;
+int main() {
+#ifdef DBG_NEW
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
+    TestBasic();
+    TestList();
+    TestListIter();
+    std::cout << "There should be one memory leak!";
+    std::cin.get();
+
 }
 
-void foo()
-{
-    /* List<int>::iterator it; */
-}
+//template class List<int>;

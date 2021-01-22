@@ -1,4 +1,4 @@
-#include "../include/List.h"
+#include "../include/List.hpp"
 
 template <class T>
 List<T>::List(const List& other)
@@ -61,11 +61,11 @@ typename List<T>::iterator List<T>::end() noexcept
 /*     /1* return _head._next != nullptr; *1/ */
 /* } */
 
-template <class T>
-size_t List<T>::size() const noexcept
-{
+/* template <class T> */
+/* size_t List<T>::size() const noexcept */
+/* { */
 
-}
+/* } */
 
 template <class T>
 typename List<T>::iterator List<T>::insert(iterator pos, const T& value) // TODO: move to Link?
@@ -105,18 +105,18 @@ void List<T>::splice(const_iterator pos, List& other, // TODO: move to Link? ren
 
 }
 
-#define CHECK assert(Invariant());
-template <class T>
-bool List<T>::Invariant()
-{
+/* #define CHECK assert(Invariant()); */
+/* template <class T> */
+/* bool List<T>::Invariant() */
+/* { */
 
-}
+/* } */
 
-template <class T>
-const bool List<T>::Invariant() const
-{
+/* template <class T> */
+/* const bool List<T>::Invariant() const */
+/* { */
 
-}
+/* } */
 
 template <class T>
 void swap(List<T>& lhs, List<T>& rhs) // O(1)

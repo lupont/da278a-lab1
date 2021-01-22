@@ -21,8 +21,15 @@ private:
         Link() : _next(this), _prev(this) {}
 
     public:
-        iterator insert(iterator pos, const T& value); // TODO: move to Link?
-        iterator erase(const iterator& pos);           // TODO: move to Link?
+        iterator insert(iterator pos, const T& value) // TODO: move to Link?
+        {
+
+        }
+
+        iterator erase(const iterator& pos)           // TODO: move to Link?
+        {
+
+        }
 
         // insert, erase, splice, osv
     };
@@ -110,17 +117,27 @@ public:
 
     List& operator=(const List& other);
 
-    T& front()             { return static_cast<Node*>(_head._next)->_data; }
+          T& front()       { return static_cast<Node*>(_head._next)->_data; }
     const T& front() const { return static_cast<Node*>(const_cast<Link*>(_head._next))->_data; }
 
-    T& back()             { return static_cast<Node*>(_head._prev)->_data; }
-    const T& back() const { return static_cast<Node*>(const_cast<Link*>(_head._prev))->_data; }
+          T& back()        { return static_cast<Node*>(_head._prev)->_data; }
+    const T& back()  const { return static_cast<Node*>(const_cast<Link*>(_head._prev))->_data; }
 
     iterator begin() noexcept;
     iterator end()   noexcept;
 
-    bool empty() const noexcept { return _head._next != nullptr; }
-    size_t size() const noexcept;
+    const_iterator cbegin() const noexcept;
+    const_iterator cend() const noexcept;
+
+    bool empty() const noexcept
+    {
+        return _head._next != nullptr;
+    }
+
+    size_t Count() const noexcept
+    {
+        return -1;
+    }
 
     void push_back(const T& value)
     {
@@ -143,12 +160,41 @@ public:
 
     void pop_back()
     {
-        _head._prev = _head._prev._prev;
+        // [H] -> [N1] -> [N2]
+        // H.next = N1
+        // H.prev = N2
+        // 
+        // N1.next = N2
+        // N1.prev = H
+        // 
+        // N2.next = H
+        // N2.prev = N1
+        // 
+        // pop_back()
+        // 
+        // [H] -> [N1]
+        // H.next = N1
+        // H.prev = N1 *
+        // 
+        // N1.next = H *
+        // N1.prev = H
+        // 
+        // pop_back()
+        // 
+        // [H]
+        // H.next = null *
+        // H.prev = null *
+
+        Link* n1 = _head._prev;
+
+        _head._prev = n1;
+
+        delete n1;
     }
 
     void pop_front()
     {
-        _head._next = _head._next._next;
+        _head._next = _head._next->_next;
     }
 
     void swap(List<T>& rhs);                     // TODO: move to Link?
@@ -185,8 +231,15 @@ public:
     }
 
     #define CHECK assert(Invariant());
-    bool Invariant();
-    const bool Invariant() const;
+    bool Invariant()
+    {
+        return true;
+    }
+
+    const bool Invariant() const
+    {
+        return true;
+    }
 
     friend void swap(List<T>& lhs, List<T>& rhs); // O(1)
 
