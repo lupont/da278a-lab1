@@ -6,11 +6,11 @@ List<T>::List(const List& other)
     _head = Link();
 }
 
-template <class T>
-List<T>::List(const char* other)
-{
-    _head = Link();
-}
+/* template <class T> */
+/* List<T>::List(const char* other) */
+/* { */
+/*     _head = Link(); */
+/* } */
 
 template <class T>
 List<T>& List<T>::operator=(const List& other)
@@ -42,17 +42,17 @@ List<T>& List<T>::operator=(const List& other)
 /*     return _head._prev; */
 /* } */
 
-template <class T>
-typename List<T>::iterator List<T>::begin() noexcept
-{
+/* template <class T> */
+/* typename List<T>::iterator List<T>::begin() noexcept */
+/* { */
 
-}
+/* } */
 
-template <class T>
-typename List<T>::iterator List<T>::end() noexcept
-{
+/* template <class T> */
+/* typename List<T>::iterator List<T>::end() noexcept */
+/* { */
 
-}
+/* } */
 
 /* template <class T> */
 /* bool List<T>::empty() const noexcept */
