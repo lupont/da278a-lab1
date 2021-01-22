@@ -213,20 +213,20 @@ public:
 
     friend bool operator <(const List& lhs, const List& rhs)
     {
-
+        auto lIt = lhs.begin();
+        auto rIt = rhs.begin();
+        for (; lIt != lhs.end() && rIt != rhs.end(); ++lIt, ++rIt)
+            if (*lIt < *rIt)
+                return true;
+            else if (*lIt > *rIt)
+                return false;
+        return (rIt != rhs.end());
     }
 
-    friend bool operator !=(const List& lhs, const List& rhs)
-    { return !(lhs == rhs); }
-
-    friend bool operator >(const List& lhs, const List& rhs)
-    { return rhs < lhs; }
-
-    friend bool operator <=(const List& lhs, const List& rhs)
-    { return !(rhs < lhs); }
-
-    friend bool operator >=(const List& lhs, const List& rhs)
-    { return !(lhs < rhs); }
+    friend bool operator !=(const List& lhs, const List& rhs) { return !(lhs == rhs); }
+    friend bool operator > (const List& lhs, const List& rhs) { return rhs < lhs;     }
+    friend bool operator <=(const List& lhs, const List& rhs) { return !(rhs < lhs);  }
+    friend bool operator >=(const List& lhs, const List& rhs) { return !(lhs < rhs);  }
     
     template <typename U>
     friend std::ostream& operator<<(std::ostream& cout, const List<U>& other)
@@ -234,13 +234,12 @@ public:
         return cout;
     }
 
-    bool Invariant()
+    bool Invariant() const
     {
-        return true;
-    }
-
-    const bool Invariant() const
-    {
+        size_t i = 0;
+        for (auto p = &_head; p->_prev != p->_next; p = p->_next)
+            if (++i == std::numeric_limits<size_t>::max())
+                return false;
         return true;
     }
 

@@ -37,7 +37,7 @@ void TestBasic() {
 #if LEVEL>=3
     {
         List<char> foo("foo"), bar("bar");
-        assert(foo == foo && foo != foo);
+        assert(foo == foo && foo != bar);
         assert(bar < foo && !(bar > foo));
         assert(bar <= foo && !(bar >= foo));
         assert(bar <= bar && foo >= foo);
