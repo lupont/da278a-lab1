@@ -8,25 +8,42 @@
 
 template<class T>
 class List {
+    /* Forward Declarations */
     template<class U> class ListIter;
     #define CHECK assert(Invariant());
+
+    class Node;
 
 public:
     using iterator = ListIter<T>;
     using const_iterator = ListIter<const T>;
 
 private:
+
     class Link {
         friend class List<T>;
         Link* _next;
         Link* _prev;
 
-        Link() : _next(this), _prev(this) {}
+        Link() : _next(nullptr), _prev(this) {}
 
     public:
+        void insert_after(Node* toInsert)
+        {
+            toInsert->_next = _next;
+            _next = toInsert;
+        }
+
+        Node* delete_after()
+        {
+            Link* tmp = _next;
+            _next = _next->_next;
+            return static_cast<Node*>(tmp);
+        }
+
         iterator insert(iterator pos, const T& value) // TODO: move to Link?
         {
-
+            pos._ptr->insert_after(value);
         }
 
         iterator erase(const iterator& pos)           // TODO: move to Link?
@@ -45,6 +62,7 @@ private:
         Node(const T& data) : _data(data) {}
     };
 
+    /* class ListIter */
     template<class X>
     class ListIter {
         using iterator_category = std::forward_iterator_tag;
@@ -100,22 +118,37 @@ private:
         }
     };
 
+    /* List methods */
+
     Link _head;
 
 public:
     List() = default;
-    List(const List& other);
+
+    List(const List& other)
+    {
+        for (auto it = other.begin(); it != other.end(); ++it)
+            push_back(*it);
+        CHECK
+    }
+
     List(const char* str) : List()
     {
         const char* ptr = str;
         while (*ptr != '\0')
-            ++ptr;
-        for (; ptr >= str; --ptr)
-            push_front(*ptr);
+        {
+            push_back(*ptr);
+            ptr++;
+        }
         CHECK
     }
 
-    ~List() = default;
+    ~List()
+    {
+        while (_head._next != nullptr)
+            pop_front();
+        CHECK
+    }
 
     List& operator=(const List& other);
 
@@ -134,7 +167,7 @@ public:
 
     bool empty() const noexcept
     {
-        return begin() == end();
+        return cbegin() == cend();
     }
 
     size_t size() const noexcept
@@ -144,44 +177,26 @@ public:
 
     size_t Count() const noexcept
     {
-        const Link* l = &_head;
+        const Link* l = _head._next;
         size_t length = 0;
-        size_t attempts = 0;
 
-        while (true)
+        while (l != nullptr)
         {
-            l = l->_next;
-            if (l->_prev == l->_next)
-                break;
-            else if (attempts > 1000)
-            {
-                std::cout << "too many attempts" << std::endl;
-                break;
-            }
-
             length++;
-            attempts++;
+            l = l->_next;
         }
+
         return length;
     }
 
     void push_back(const T& value)
     {
-        Node* node = new Node { value };
-        node->_next = &_head;
-        node->_prev = _head._prev;
-
-        _head._prev->_next = node;
-        _head._prev = node;
+        _head._prev->insert_after(new Node(value));
     }
 
     void push_front(const T& value)
     {
-        Node* node = new Node { value };
-        node->_next = _head._next;
-        node->_prev = &_head;
-
-        _head._next = node;
+        _head.insert_after(new Node(value));
     }
 
     void pop_back()
@@ -193,7 +208,8 @@ public:
 
     void pop_front()
     {
-        _head._next = _head._next->_next;
+        /* _head._next = _head._next->_next; */
+        delete (_head.delete_after());
     }
 
     void swap(List<T>& rhs);                     // TODO: move to Link?
@@ -203,30 +219,43 @@ public:
 
     friend bool operator ==(const List& lhs, const List& rhs)
     {
+        if (lhs.Count() != rhs.Count())
+            return false;
+
         const_iterator lIt = lhs.begin();
         const_iterator rIt = rhs.begin();
-        for (; lIt != lhs.end() && rIt != rhs.end(); ++lIt, ++rIt)
+        while (lIt != lhs.end())
+        {
             if (*lIt != *rIt)
                 return false;
-        return (lIt == lhs.end()) && (rIt == rhs.end());
+
+            lIt++;
+            rIt++;
+        }
+        return lIt == lhs.end() && rIt == rhs.end();
+
+        /* const_iterator lIt = lhs.cbegin(); */
+        /* const_iterator rIt = rhs.cbegin(); */
+        /* for (; lIt != lhs.cend() && rIt != rhs.cend(); ++lIt, ++rIt) */
+        /*     if (*lIt != *rIt) */
+        /*         return false; */
+        /* return (lIt == lhs.cend()) && (rIt == rhs.cend()); */
     }
 
     friend bool operator <(const List& lhs, const List& rhs)
     {
-        auto lIt = lhs.begin();
-        auto rIt = rhs.begin();
-        for (; lIt != lhs.end() && rIt != rhs.end(); ++lIt, ++rIt)
-            if (*lIt < *rIt)
-                return true;
-            else if (*lIt > *rIt)
-                return false;
-        return (rIt != rhs.end());
+        auto lIt = lhs.cbegin();
+        auto rIt = rhs.cbegin();
+        for (; lIt != lhs.cend() && rIt != rhs.cend(); ++lIt, ++rIt)
+            if      (*lIt < *rIt) return true;
+            else if (*lIt > *rIt) return false;
+        return (rIt != rhs.cend());
     }
 
     friend bool operator !=(const List& lhs, const List& rhs) { return !(lhs == rhs); }
-    friend bool operator > (const List& lhs, const List& rhs) { return rhs < lhs;     }
-    friend bool operator <=(const List& lhs, const List& rhs) { return !(rhs < lhs);  }
-    friend bool operator >=(const List& lhs, const List& rhs) { return !(lhs < rhs);  }
+    friend bool operator > (const List& lhs, const List& rhs) { return  (rhs <  lhs); }
+    friend bool operator <=(const List& lhs, const List& rhs) { return !(rhs <  lhs); }
+    friend bool operator >=(const List& lhs, const List& rhs) { return !(lhs <  rhs); }
     
     template <typename U>
     friend std::ostream& operator<<(std::ostream& cout, const List<U>& other)
@@ -236,23 +265,28 @@ public:
 
     bool Invariant() const
     {
-        size_t i = 0;
-        for (auto p = &_head; p->_prev != p->_next; p = p->_next)
-            if (++i == std::numeric_limits<size_t>::max())
-                return false;
         return true;
+        /* size_t i = 0; */
+        /* for (auto p = &_head; p->_prev != p->_next; p = p->_next) */
+        /*     if (++i == std::numeric_limits<size_t>::max()) */
+        /*         return false; */
+        /* return true; */
     }
 
     friend void swap(List<T>& lhs, List<T>& rhs); // O(1)
 
-    iterator insert(iterator pos, const T& value); // TODO: move to Link?
-    iterator erase(const iterator& pos);           // TODO: move to Link?
+    iterator insert(iterator pos, const T& value) // TODO: move to Link?
+    {
+    }
+
+    iterator erase(const iterator& pos)           // TODO: move to Link?
+    {
+    }
 
     void Print(std::ostream& cout)
     {
         cout << "printing" << std::endl;
     }
 };
-
 
 #endif

@@ -1,10 +1,10 @@
 #include "../include/List.hpp"
 
-template <class T>
-List<T>::List(const List& other)
-{
-    _head = Link();
-}
+/* template <class T> */
+/* List<T>::List(const List& other) */
+/* { */
+/*     _head = Link(); */
+/* } */
 
 /* template <class T> */
 /* List<T>::List(const char* other) */
@@ -12,11 +12,11 @@ List<T>::List(const List& other)
 /*     _head = Link(); */
 /* } */
 
-template <class T>
-List<T>& List<T>::operator=(const List& other)
-{
+/* template <class T> */
+/* List<T>& List<T>::operator=(const List& other) */
+/* { */
 
-}
+/* } */
 
 /* template <class T> */
 /* T& List<T>::front() */
@@ -67,17 +67,17 @@ List<T>& List<T>::operator=(const List& other)
 
 /* } */
 
-template <class T>
-typename List<T>::iterator List<T>::insert(iterator pos, const T& value) // TODO: move to Link?
-{
+/* template <class T> */
+/* typename List<T>::iterator List<T>::insert(iterator pos, const T& value) // TODO: move to Link? */
+/* { */
 
-}
+/* } */
 
-template <class T>
-typename List<T>::iterator List<T>::erase(const iterator& pos)           // TODO: move to Link?
-{
+/* template <class T> */
+/* typename List<T>::iterator List<T>::erase(const iterator& pos)           // TODO: move to Link? */
+/* { */
 
-}
+/* } */
 
 /* template <class T> */
 /* void List<T>::pop_back() */
@@ -91,19 +91,19 @@ typename List<T>::iterator List<T>::erase(const iterator& pos)           // TODO
 /*     _head._next = _head._next._next; */
 /* } */
 
-template <class T>
-void List<T>::swap(List<T>& rhs) // TODO: move to Link?
-{
+/* template <class T> */
+/* void List<T>::swap(List<T>& rhs) // TODO: move to Link? */
+/* { */
 
-}
+/* } */
 
-template <class T>
-void List<T>::splice(const_iterator pos, List& other, // TODO: move to Link? rename List to list?
-            const_iterator first,
-            const_iterator last)
-{
+/* template <class T> */
+/* void List<T>::splice(const_iterator pos, List& other, // TODO: move to Link? rename List to list? */
+/*             const_iterator first, */
+/*             const_iterator last) */
+/* { */
 
-}
+/* } */
 
 /* #define CHECK assert(Invariant()); */
 /* template <class T> */
@@ -118,11 +118,11 @@ void List<T>::splice(const_iterator pos, List& other, // TODO: move to Link? ren
 
 /* } */
 
-template <class T>
-void swap(List<T>& lhs, List<T>& rhs) // O(1)
-{
+/* template <class T> */
+/* void swap(List<T>& lhs, List<T>& rhs) // O(1) */
+/* { */
 
-}
+/* } */
 
 /* template <class T> */
 /* std::ostream& operator<<(std::ostream& cout, const List<T>& other) */
@@ -131,21 +131,21 @@ void swap(List<T>& lhs, List<T>& rhs) // O(1)
 /* } */
 
 /* ListIter(Node<T>* p); */
-template <class T>
-typename List<T>::iterator ListIter()
-{
+/* template <class T> */
+/* typename List<T>::iterator ListIter() */
+/* { */
 
-}
+/* } */
 
-template <class T>
-typename List<T>::iterator insert(typename List<T>::iterator pos, const T& value) // TODO: move to Link?
-{
+/* template <class T> */
+/* typename List<T>::iterator insert(typename List<T>::iterator pos, const T& value) // TODO: move to Link? */
+/* { */
 
-}
+/* } */
 
-template <class T>
-typename List<T>::iterator erase(const typename List<T>::iterator& pos)           // TODO: move to Link?
-{
+/* template <class T> */
+/* typename List<T>::iterator erase(const typename List<T>::iterator& pos)           // TODO: move to Link? */
+/* { */
 
-}
+/* } */
 

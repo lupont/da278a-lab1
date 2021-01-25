@@ -10,9 +10,9 @@
 #include <iostream>
 using std::cout;
 
-#include "../include/TestLevel.h"
+#include "TestLevel.h"
 
-#include "../include/List.hpp"
+#include "List.hpp"
 
 struct C { int i; };
 
@@ -20,7 +20,6 @@ void TestBasic() {
 #if LEVEL>=1
     {
         List<char> l;
-        std::cout << l.Count() << std::endl;
         assert(l.Count() == 0);
         assert(l.Invariant());
     }
@@ -28,12 +27,9 @@ void TestBasic() {
 #if LEVEL>=2
     {
         List<char> foo("foo");
-        std::cout << foo.Count() << std::endl;
         assert(foo.Count() == 3);
         foo.Print(cout);;
-        std::cout << "made it past print" << std::endl;
         assert(foo == foo);
-        std::cout << "made it past foo == foo" << std::endl;
         List<char> bar("bar");
         assert(!(foo == bar));
     }
@@ -53,8 +49,7 @@ void TestBasic() {
     {
         List<char> foo("foo"), bar("bar");
         List<char> foo2(foo);
-        assert(foo2.Invariant());
-        assert(foo2.Count() == 3);
+        assert(foo2.Invariant() && foo2.Count() == 3);
         assert(foo == foo2);
     }
 #endif
