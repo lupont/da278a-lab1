@@ -30,10 +30,18 @@ private:
     public:
         void insert_after(Node* toInsert)
         {
-            toInsert->_next = _next;
             toInsert->_prev = this;
+            toInsert->_next = _next;
             _next->_prev = toInsert;
             _next = toInsert;
+        }
+
+        void insert_before(Node* toInsert)
+        {
+            toInsert->_prev = _prev;
+            toInsert->_next = this;
+            _prev->_next = toInsert;
+            _prev = toInsert;
         }
 
         Node* delete_after()
@@ -44,17 +52,13 @@ private:
             return static_cast<Node*>(tmp);
         }
 
-        iterator insert(iterator pos, const T& value) // TODO: move to Link?
+        Node* delete_before()
         {
-            pos._ptr->insert_after(value);
+            Link* tmp = _prev;
+            _prev->_prev->_next = this;
+            _prev = _prev->_prev;
+            return static_cast<Node*>(tmp);
         }
-
-        iterator erase(const iterator& pos)           // TODO: move to Link?
-        {
-
-        }
-
-        // insert, erase, splice, osv
     };
 
     class Node : public Link {
@@ -89,7 +93,11 @@ private:
 
         ListIter& operator=(const ListIter& other)
         {
+            if (&other == this)
+                return *this;
+
             _ptr = other._ptr;
+            return *this;
         }
 
         X& operator*() { return _ptr->_data; }
@@ -104,9 +112,9 @@ private:
 
         ListIter operator++(int)
         {
-            auto temp(*this);
+            auto tmp(*this);
             operator++();
-            return temp;
+            return tmp;
         }
 
         ListIter& operator--()
@@ -183,15 +191,9 @@ public:
     const_iterator end()  const noexcept { return const_iterator(&_head); }
     const_iterator cend() const noexcept { return const_iterator(&_head); }
 
-    bool empty() const noexcept
-    {
-        return cbegin() == cend();
-    }
+    bool empty() const noexcept { return cbegin() == cend(); }
 
-    size_t size() const noexcept
-    {
-        return Count();
-    }
+    size_t size() const noexcept { return Count(); }
 
     size_t Count() const noexcept
     {
@@ -203,22 +205,27 @@ public:
 
     void push_back(const T& value)
     {
-        _head._prev->insert_after(new Node(value));
+        _head.insert_before(new Node(value));
+        CHECK
     }
 
     void push_front(const T& value)
     {
         _head.insert_after(new Node(value));
+        CHECK
     }
 
     void pop_back()
     {
-        delete (_head._prev->_prev->delete_after());
+        // delete (_head._prev->delete_after());
+        delete (_head.delete_before());
+        CHECK
     }
 
     void pop_front()
     {
         delete (_head.delete_after());
+        CHECK
     }
 
     void swap(List<T>& rhs);                     // TODO: move to Link?
@@ -245,14 +252,7 @@ public:
                 return true;
             else if (*lIt > *rIt)
                 return false;
-        return (rIt != rhs.end());  //if lhs shorter it is less
-
-        /* auto lIt = lhs.cbegin(); */
-        /* auto rIt = rhs.cbegin(); */
-        /* for (; lIt != lhs.cend() && rIt != rhs.cend(); ++lIt, ++rIt) */
-        /*     if      (*lIt < *rIt) return true; */
-        /*     else if (*lIt > *rIt) return false; */
-        /* return (rIt != rhs.cend()); */
+        return (rIt != rhs.end());
     }
 
     friend bool operator !=(const List& lhs, const List& rhs) { return !(lhs == rhs); }
@@ -263,27 +263,28 @@ public:
     template <typename U>
     friend std::ostream& operator<<(std::ostream& cout, const List<U>& other)
     {
-        return cout;
+        return other.Print(cout);
     }
 
-    bool Invariant() const
+    bool Invariant() const { return true; }
+
+    friend void swap(List<T>& lhs, List<T>& rhs) // O(1)
     {
-        return true;
-        /* size_t i = 0; */
-        /* for (auto p = &_head; p->_prev != p->_next; p = p->_next) */
-        /*     if (++i == std::numeric_limits<size_t>::max()) */
-        /*         return false; */
-        /* return true; */
+        Link tmp = lhs._head;
+        lhs._head = rhs._head;
+        rhs._head = tmp;
     }
 
-    friend void swap(List<T>& lhs, List<T>& rhs); // O(1)
-
-    iterator insert(iterator pos, const T& value) // TODO: move to Link?
+    iterator insert(iterator pos, const T& value)
     {
+        pos._ptr->insert_before(new Node(value));
+        return pos._ptr->_prev;
     }
 
-    iterator erase(const iterator& pos)           // TODO: move to Link?
+    iterator erase(const iterator& pos)
     {
+        delete (pos._ptr->_prev->delete_after());
+        return pos._ptr->_next;
     }
 
     std::ostream& Print(std::ostream& cout) const

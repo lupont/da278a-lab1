@@ -13,8 +13,8 @@
 #include "../include/List.hpp"
 
 using Cont = List<char>; //Ersätt List med vad er lista heter
-using  Iter = Cont::iterator;
-using  CIter = Cont::const_iterator;
+using Iter = Cont::iterator;
+using CIter = Cont::const_iterator;
 
 #define FOX List<char> Fox("Fox");
 #define FOX0 List<char> Fox;
@@ -28,17 +28,17 @@ using std::cout;
 
 template <class T>
 struct IsConstOrConstRef {
-    static const bool value = std::is_const<std::remove_reference<T>::type>::value;
+    static const bool value = std::is_const<typename std::remove_reference<T>::type>::value;
 };
 
 template <class T>
 bool IsConstOrConstRefFun(T& x) {
-    return std::is_const<std::remove_reference<T>::type>::value;
+    return std::is_const<typename std::remove_reference<T>::type>::value;
 };
 
 void TestIterRel(); //Längst ner
 
-void TestSpliceAndSwap(); // Längst ner
+void TestSpliceAndSwap() {} // Längst ner
 
 void TestList() {
     {
@@ -146,11 +146,19 @@ void TestList() {
         auto it = ++++a.begin(); //c
         it = a.insert(it, 'X');
         assert(a.Invariant());
+        a.Print(cout);
+        assert(*it == 'X');
+        a.Print(cout);
+        assert(a == "abXcde");
         assert(*it == 'X' && a == "abXcde");
         assert(a.Invariant());
         it = ----a.end(); //d
+        a.Print(cout);
         it = a.erase(it);
         assert(a.Invariant());
+        a.Print(cout);
+        assert(*it == 'e');
+        assert(a == "abXce");
         assert(*it == 'e' && a == "abXce");
 
     }
@@ -159,16 +167,22 @@ void TestList() {
         Cont a{};
         char c = 'b';
         a.push_front(c);    //To use & version
+        a.Print(cout);
         assert(a == "b");
         a.push_back('c');   //WIll use && version
+        a.Print(cout);
         assert(a == "bc");
         a.push_front('a');
+        a.Print(cout);
         assert(a == "abc");
         a.pop_front();
+        a.Print(cout);
         assert(a == "bc");
         a.pop_back();
+        a.Print(cout);
         assert(a == "b");
         a.push_back('x');
+        a.Print(cout);
         assert(a == "bx");
     }
 
@@ -365,7 +379,7 @@ void TestSpliceAndSwap()
 }
 
 
-#endif VG
+#endif
 
 void XXX() {
     List<char> a("xyz");
