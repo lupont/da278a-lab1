@@ -25,12 +25,14 @@ private:
         Link* _next;
         Link* _prev;
 
-        Link() : _next(nullptr), _prev(this) {}
+        Link() : _next(this), _prev(this) {}
 
     public:
         void insert_after(Node* toInsert)
         {
             toInsert->_next = _next;
+            toInsert->_prev = this;
+            _next->_prev = toInsert;
             _next = toInsert;
         }
 
@@ -38,6 +40,7 @@ private:
         {
             Link* tmp = _next;
             _next = _next->_next;
+            _next->_prev = _prev;
             return static_cast<Node*>(tmp);
         }
 
@@ -75,9 +78,12 @@ private:
         Node* _ptr;
 
     public:
-        ListIter(List<T>::Link* p) : _ptr(static_cast<Node*>(const_cast<Link*>(p))) {}
+        ListIter(const Link* p) : _ptr(static_cast<Node*>(const_cast<Link*>(p))) {}
         ListIter() = default;
-        ListIter(const ListIter&) = default;
+        ListIter(const ListIter& other)
+        {
+            _ptr = other._ptr;
+        }
 
         ~ListIter() = default;
 
@@ -90,7 +96,7 @@ private:
 
         X* operator->() { return &_ptr->_data; }
 
-        ListIter& operator++() // ska inte kontrollera om man är utanför listan, utan lämna det problemet åt programmeraren
+        ListIter& operator++()
         {
             _ptr = static_cast<Node*>(_ptr->_next);
             return *this;
@@ -103,9 +109,18 @@ private:
             return temp;
         }
 
-        ListIter& operator--() {}
+        ListIter& operator--()
+        {
+            _ptr = static_cast<Node*>(_ptr->_prev);
+            return *this;
+        }
 
-        ListIter operator--(int foo) {}
+        ListIter operator--(int)
+        {
+            auto temp(*this);
+            operator--();
+            return temp;
+        }
 
         friend bool operator ==(const ListIter& lhs, const ListIter& rhs)
         {
@@ -125,9 +140,9 @@ private:
 public:
     List() = default;
 
-    List(const List& other)
+    List(const List& other) : List()
     {
-        for (auto it = other.begin(); it != other.end(); ++it)
+        for (const_iterator it = other.cbegin(); it != other.cend(); ++it)
             push_back(*it);
         CHECK
     }
@@ -135,17 +150,19 @@ public:
     List(const char* str) : List()
     {
         const char* ptr = str;
-        while (*ptr != '\0')
-        {
-            push_back(*ptr);
-            ptr++;
-        }
+
+        while (*ptr != '\0') ++ptr;
+        --ptr;
+
+        while (ptr >= str)
+            push_front(*ptr--);
+
         CHECK
     }
 
     ~List()
     {
-        while (_head._next != nullptr)
+        while (_head._next != &_head)
             pop_front();
         CHECK
     }
@@ -159,11 +176,12 @@ public:
     const T& back()  const { return static_cast<Node*>(_head._prev)->_data; }
 
     iterator       begin()        noexcept { return iterator(_head._next);       }
-    iterator       end()          noexcept { return iterator(_head._prev);       }
     const_iterator begin()  const noexcept { return const_iterator(_head._next); }
-    const_iterator end()    const noexcept { return const_iterator(_head._prev); }
     const_iterator cbegin() const noexcept { return const_iterator(_head._next); }
-    const_iterator cend()   const noexcept { return const_iterator(_head._prev); }
+
+    iterator       end()        noexcept { return iterator(&_head);       }
+    const_iterator end()  const noexcept { return const_iterator(&_head); }
+    const_iterator cend() const noexcept { return const_iterator(&_head); }
 
     bool empty() const noexcept
     {
@@ -177,15 +195,9 @@ public:
 
     size_t Count() const noexcept
     {
-        const Link* l = _head._next;
         size_t length = 0;
-
-        while (l != nullptr)
-        {
+        for (const_iterator it = cbegin(); it != cend(); ++it)
             length++;
-            l = l->_next;
-        }
-
         return length;
     }
 
@@ -201,14 +213,11 @@ public:
 
     void pop_back()
     {
-        Link* n1 = _head._prev;
-        _head._prev = n1;
-        delete n1;
+        delete (_head._prev->_prev->delete_after());
     }
 
     void pop_front()
     {
-        /* _head._next = _head._next->_next; */
         delete (_head.delete_after());
     }
 
@@ -219,37 +228,31 @@ public:
 
     friend bool operator ==(const List& lhs, const List& rhs)
     {
-        if (lhs.Count() != rhs.Count())
-            return false;
-
         const_iterator lIt = lhs.begin();
         const_iterator rIt = rhs.begin();
-        while (lIt != lhs.end())
-        {
+        for (; lIt != lhs.end() && rIt != rhs.end(); ++lIt, ++rIt)
             if (*lIt != *rIt)
                 return false;
-
-            lIt++;
-            rIt++;
-        }
-        return lIt == lhs.end() && rIt == rhs.end();
-
-        /* const_iterator lIt = lhs.cbegin(); */
-        /* const_iterator rIt = rhs.cbegin(); */
-        /* for (; lIt != lhs.cend() && rIt != rhs.cend(); ++lIt, ++rIt) */
-        /*     if (*lIt != *rIt) */
-        /*         return false; */
-        /* return (lIt == lhs.cend()) && (rIt == rhs.cend()); */
+        return (lIt == lhs.end()) && (rIt == rhs.end());
     }
 
     friend bool operator <(const List& lhs, const List& rhs)
     {
-        auto lIt = lhs.cbegin();
-        auto rIt = rhs.cbegin();
-        for (; lIt != lhs.cend() && rIt != rhs.cend(); ++lIt, ++rIt)
-            if      (*lIt < *rIt) return true;
-            else if (*lIt > *rIt) return false;
-        return (rIt != rhs.cend());
+        const_iterator lIt = lhs.begin();
+        const_iterator rIt = rhs.begin();
+        for (; lIt != lhs.end() && rIt != rhs.end(); ++lIt, ++rIt)
+            if (*lIt < *rIt)
+                return true;
+            else if (*lIt > *rIt)
+                return false;
+        return (rIt != rhs.end());  //if lhs shorter it is less
+
+        /* auto lIt = lhs.cbegin(); */
+        /* auto rIt = rhs.cbegin(); */
+        /* for (; lIt != lhs.cend() && rIt != rhs.cend(); ++lIt, ++rIt) */
+        /*     if      (*lIt < *rIt) return true; */
+        /*     else if (*lIt > *rIt) return false; */
+        /* return (rIt != rhs.cend()); */
     }
 
     friend bool operator !=(const List& lhs, const List& rhs) { return !(lhs == rhs); }
@@ -283,9 +286,17 @@ public:
     {
     }
 
-    void Print(std::ostream& cout)
+    std::ostream& Print(std::ostream& cout) const
     {
-        cout << "printing" << std::endl;
+        for (const_iterator it = cbegin(); it != cend(); ++it)
+        {
+            cout << *it << " ";
+        }
+
+        cout << "(size: " << Count() << ")";
+
+        cout << std::endl;
+        return cout;
     }
 };
 

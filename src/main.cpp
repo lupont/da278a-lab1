@@ -22,29 +22,22 @@ void TestBasic();
 void TestList();
 void TestListIter();
 
-void main_test()
-{
+int main() {
 #ifdef DBG_NEW
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
     TestBasic();
+    /* cout << "Basic Test OK!" << std::endl; */
+    
     TestList();
-    TestListIter();
-    std::cout << "There should be one memory leak!";
-    /* std::cin.get(); */
-}
+    /* cout << "List Test OK!" << std::endl; */
 
-int main()
-{
-    if (true)
-    {
-        main_test();
-    }
-    else
-    {
-        List<char> foo("hej");
-    }
+    TestListIter();
+    /* cout << "ListIter Test OK!" << std::endl; */
+
+    new int(7);
+    std::cout << "There should be one memory leak!";
 }
 
 //template class List<int>;

@@ -13,7 +13,7 @@
 #include "../include/List.hpp"
 //#include "ListIter.hpp"
 
-using Cont = List<char>; //Ers‰tt List med vad er lista heter
+using Cont = List<char>; //Ers√§tt List med vad er lista heter
 using  Iter = Cont::iterator;
 using  CIter = Cont::const_iterator;
 
@@ -39,7 +39,7 @@ void TestPP() {
     Iter end = cont.end();
     for (auto i = begin; i != end; ++i)
         cout << *i;
-    cout << " stÂr det FooBar?" << endl;
+    cout << " st√•r det FooBar?" << endl;
     auto it = begin;
     assert(*it == 'F');
     assert(*(it++) == 'F' && *it == 'o');
@@ -55,7 +55,7 @@ void TestMM() {
     Iter end = cont.begin(); --end;
     for (auto i = begin; i != end; --i)
         cout << *i;
-    cout << " stÂr det FooBar?" << endl;
+    cout << " st√•r det FooBar?" << endl;
     auto it = begin;
     assert(*it == 'F');
     assert(*(it--) == 'F' && *it == 'o');
@@ -105,7 +105,7 @@ void TestListIter1() {
     TestPP();   // ++ * begin end
     TestMM();   // --
 
-    //-	typdef fˆr iterator
+    //-	typdef f√∂r iterator
     /*Cont::iterator iter;
     Cont vec("hej");
     iter = vec.begin();*/
