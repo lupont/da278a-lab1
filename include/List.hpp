@@ -33,10 +33,7 @@ private:
 
         void insert_before(Node* toInsert)
         {
-            toInsert->_prev = _prev;
-            toInsert->_next = this;
-            _prev->_next = toInsert;
-            _prev = toInsert;
+            _prev->insert_after(toInsert);
         }
 
         Node* delete_after()
@@ -49,6 +46,7 @@ private:
 
         Node* delete_before()
         {
+            // TODO: use delete_after instead
             Link* tmp = _prev;
             _prev->_prev->_next = this;
             _prev = _prev->_prev;
@@ -72,7 +70,7 @@ private:
         Node* _ptr;
 
     public:
-        using iterator_category = std::forward_iterator_tag;
+        using iterator_category = std::bidirectional_iterator_tag;
         using value_type        = T;
         using difference_type   = std::ptrdiff_t;
         using reference         = X&;
@@ -148,6 +146,7 @@ public:
 
     List(const List& other) : List()
     {
+        // TODO: don't use push_back
         for (const_iterator it = other.cbegin(); it != other.cend(); ++it)
             push_back(*it);
         CHECK
@@ -171,12 +170,20 @@ public:
 
     List& operator=(const List& other)
     {
+        // // Other implementation
+        // List tmp(other);
+        // swap(*this, tmp);
+        // return *this;
+        
         if (&other == this)
             return *this;
 
+        // TODO: don't use push_back
+        pop_all();
         for (auto it = other.begin(); it != other.end(); ++it)
             push_back(*it);
         CHECK
+        return *this;
     }
 
           T& front()       { return static_cast<Node*>(_head._next)->_data; }
@@ -223,24 +230,16 @@ public:
 
     void swap(List<T>& rhs)
     {
-        Link* next = _head._next;
-        Link* prev = _head._prev;
         Link* head = &_head;
+        Link* next = head->_next;
+        Link* prev = head->_prev;
 
-        // Link* rnext = rhs._head._next;
-        // Link* rprev = rhs._head._prev;
-        // Link* rhead = &rhs._head;
-
-        // _head._next->_prev = rhead;
         _head._next->_prev = &rhs._head;
-        // _head._next        = rnext;
         _head._next        = rhs._head._next;
 
         rhs._head._next->_prev = head;
         rhs._head._next        = next;
         
-        // _head._prev->_next = rhead;
-        // _head._prev        = rprev;
         _head._prev->_next = &rhs._head;
         _head._prev        = rhs._head._prev;
 
