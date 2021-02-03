@@ -1,3 +1,4 @@
+#include <cassert>
 #ifdef _DEBUG
 #ifndef DBG_NEW
 #include <stdlib.h>
@@ -43,19 +44,12 @@ int main() {
     }
     else
     {
-        List<char> bar;
-        bar.push_back('b');
-        cout << bar << std::endl;
-        bar.push_back('a');
-        cout << bar << std::endl;
-        bar.push_back('r');
-        cout << bar << std::endl;
-        bar.pop_back();
-        cout << bar << std::endl;
-        bar.pop_back();
-        cout << bar << std::endl;
-        bar.pop_back();
-        cout << bar << std::endl;
+        List<char> bar("foo bar");
+        size_t size = bar.size();
+        for (size_t i = 0; i < size; ++i)
+            bar.pop_front();
+        bar.Print(cout);
+        assert(bar.empty());
     }
 }
 

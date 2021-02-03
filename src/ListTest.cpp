@@ -38,7 +38,7 @@ bool IsConstOrConstRefFun(T& x) {
 
 void TestIterRel(); //Längst ner
 
-void TestSpliceAndSwap() {} // Längst ner
+void TestSpliceAndSwap(); // Längst ner
 
 void TestList() {
     {
@@ -146,17 +146,13 @@ void TestList() {
         auto it = ++++a.begin(); //c
         it = a.insert(it, 'X');
         assert(a.Invariant());
-        a.Print(cout);
         assert(*it == 'X');
-        a.Print(cout);
         assert(a == "abXcde");
         assert(*it == 'X' && a == "abXcde");
         assert(a.Invariant());
         it = ----a.end(); //d
-        a.Print(cout);
         it = a.erase(it);
         assert(a.Invariant());
-        a.Print(cout);
         assert(*it == 'e');
         assert(a == "abXce");
         assert(*it == 'e' && a == "abXce");
@@ -167,22 +163,16 @@ void TestList() {
         Cont a{};
         char c = 'b';
         a.push_front(c);    //To use & version
-        a.Print(cout);
         assert(a == "b");
         a.push_back('c');   //WIll use && version
-        a.Print(cout);
         assert(a == "bc");
         a.push_front('a');
-        a.Print(cout);
         assert(a == "abc");
         a.pop_front();
-        a.Print(cout);
         assert(a == "bc");
         a.pop_back();
-        a.Print(cout);
         assert(a == "b");
         a.push_back('x');
-        a.Print(cout);
         assert(a == "bx");
     }
 
